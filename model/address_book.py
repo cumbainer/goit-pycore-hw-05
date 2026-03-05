@@ -1,8 +1,14 @@
+from __future__ import annotations
+
+import pickle
 from datetime import date, timedelta
+from pathlib import Path
 from typing import Optional, List, Dict
 
 from model.record import Record
 from utils.constants import BIRTHDAY_GREET_DAYS_AHEAD
+
+DEFAULT_STORAGE_FILE = "addressbook.pkl"
 
 CONGRATULATION_DATE_FORMAT = "%d.%m.%Y"
 
@@ -51,6 +57,18 @@ class AddressBook:
             })
 
         return result
+
+    def save(self, filename: str = DEFAULT_STORAGE_FILE) -> None:
+        with open(filename, "wb") as f:
+            pickle.dump(self, f)
+
+    @classmethod
+    def load(cls, filename: str = DEFAULT_STORAGE_FILE) -> AddressBook:
+        path = Path(filename)
+        if not path.exists():
+            return cls()
+        with open(path, "rb") as f:
+            return pickle.load(f)
 
     def __str__(self) -> str:
         return "\n".join(str(r) for r in self.__records)

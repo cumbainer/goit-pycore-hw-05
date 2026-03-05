@@ -7,7 +7,7 @@ from model.record import Record
 
 class Bot:
     def __init__(self):
-        self._book = AddressBook()
+        self._book = AddressBook.load()
         self._commands: Dict[str, Callable[[List[str]], str]] = {
             "add": lambda args: self._add_contact(args),
             "change": lambda args: self._change_phone(args),
@@ -26,6 +26,7 @@ class Bot:
             command, args = self._parse_input(user_input)
 
             if command in ("close", "exit"):
+                self._book.save()
                 print("Good bye!")
                 break
 
